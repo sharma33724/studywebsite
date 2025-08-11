@@ -1,18 +1,20 @@
 import axios from 'axios';
 
-// Get the API base URL from environment variables
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+// Firebase Functions URL - will be updated after deployment
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://us-central1-studywebsite-4f6b9.cloudfunctions.net/api'
+  : 'http://localhost:5000';
 
-// Create axios instance with base configuration
-const api = axios.create({
+const instance = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 // Request interceptor to add auth token
-api.interceptors.request.use(
+instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -25,12 +27,13 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle common errors
-api.interceptors.response.use(
-  (response) => response,
+// Response interceptor to handle errors
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
@@ -38,4 +41,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api; 
+export default instance; 

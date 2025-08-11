@@ -22,7 +22,7 @@ function App() {
   return (
     <AuthProvider>
       <CourseProvider>
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
           <Navbar />
           <AnimatePresence mode="wait">
             <Routes>

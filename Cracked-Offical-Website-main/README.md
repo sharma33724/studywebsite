@@ -1,32 +1,79 @@
-# Crackd Official - SAT Prep Platform
+# Prepify - Comprehensive Test Prep Platform
 
-A professional SAT preparation platform built with React and Node.js.
+A professional test preparation platform for SAT and AP exams, built with React and Node.js.
 
-## 🚀 Deployment Status
+## 🚀 Quick Start (Local Development)
 
-- **Backend API:** Deployed on Render at `https://crackd-official-api.onrender.com`
-- **Frontend:** Deploying on Vercel
-- **Database:** MongoDB Atlas
+### Option 1: Simple Server Start
+```bash
+# Start backend server on port 5000
+node server/index.js
+
+# In another terminal, start frontend on port 3000
+npm run start:client
+```
+
+### Option 2: Using Scripts
+```bash
+# Windows - Double click start-server.bat or run:
+start-server.bat
+
+# PowerShell - Run:
+.\start-server.ps1
+
+# Or use npm scripts:
+npm run start          # Start backend
+npm run start:client  # Start frontend
+npm run dev           # Start both simultaneously
+```
+
+## 🌍 Local URLs
+- **Backend API:** http://localhost:5000
+- **Frontend:** http://localhost:3000
+- **API Health Check:** http://localhost:5000/api/health
 
 ## 🛠️ Tech Stack
 
 - **Frontend:** React, Tailwind CSS, Framer Motion
 - **Backend:** Node.js, Express, MongoDB
-- **Deployment:** Render (Backend), Vercel (Frontend)
+- **Deployment:** Firebase Hosting (Frontend), Firebase Functions (Backend)
 
 ## 📚 Features
 
-- SAT practice tests
-- Progress tracking
-- Course management
-- User authentication
-- Real-time updates
+- **SAT Preparation:**
+  - Practice tests
+  - Progress tracking
+  - Course management
+  
+- **AP Exam Preparation:**
+  - Multiple AP subjects
+  - Subject-specific practice
+  - Advanced placement strategies
+  
+- **General Features:**
+  - User authentication
+  - Real-time updates
+  - Comprehensive analytics
 
-## 🌐 Live Demo
+## 🚀 Deployment
 
-- **API Health Check:** https://crackd-official-api.onrender.com/api/health
-- **Frontend:** Coming soon on Vercel
+### Firebase Hosting (Frontend)
+- Build the React app: `npm run build:client`
+- Deploy to Firebase: `firebase deploy`
+
+### Firebase Functions (Backend)
+- Convert Express app to Firebase Functions
+- Deploy with: `firebase deploy --only functions`
+
+## 📁 Project Structure
+```
+├── client/          # React frontend
+├── server/          # Express backend
+├── start-server.bat # Windows startup script
+├── start-server.ps1 # PowerShell startup script
+└── package.json     # Root dependencies
+```
 
 ---
 
-**Built with ❤️ for SAT students worldwide** 
+**Built with ❤️ for students preparing for SAT and AP exams worldwide** 

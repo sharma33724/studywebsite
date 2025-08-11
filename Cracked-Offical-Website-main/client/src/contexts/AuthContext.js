@@ -1,12 +1,19 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import api from '../config/axios';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  updateProfile
+} from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../config/firebase';
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
 const initialState = {
   user: null,
-  token: localStorage.getItem('token'),
   isAuthenticated: false,
   loading: true,
   error: null
@@ -17,8 +24,7 @@ const authReducer = (state, action) => {
     case 'LOGIN_SUCCESS':
       return {
         ...state,
-        user: action.payload.user,
-        token: action.payload.token,
+        user: action.payload,
         isAuthenticated: true,
         loading: false,
         error: null
@@ -27,7 +33,6 @@ const authReducer = (state, action) => {
       return {
         ...state,
         user: null,
-        token: null,
         isAuthenticated: false,
         loading: false,
         error: action.payload
@@ -36,7 +41,6 @@ const authReducer = (state, action) => {
       return {
         ...state,
         user: null,
-        token: null,
         isAuthenticated: false,
         loading: false,
         error: null
@@ -65,95 +69,126 @@ const authReducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Set auth token header
+  // Listen for auth state changes
   useEffect(() => {
-    if (state.token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${state.token}`;
-    } else {
-      delete api.defaults.headers.common['Authorization'];
-    }
-  }, [state.token]);
-
-  // Load user on app start
-  useEffect(() => {
-    const loadUser = async () => {
-      if (state.token) {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Get additional user data from Firestore
         try {
-          const res = await api.get('/api/auth/me');
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          const userData = userDoc.exists() ? userDoc.data() : {};
+          
+          const fullUser = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            ...userData
+          };
+          
           dispatch({
             type: 'LOGIN_SUCCESS',
-            payload: { user: res.data, token: state.token }
+            payload: fullUser
           });
         } catch (error) {
-          localStorage.removeItem('token');
-          dispatch({ type: 'LOGIN_FAIL', payload: 'Token expired' });
+          console.error('Error fetching user data:', error);
+          dispatch({
+            type: 'LOGIN_SUCCESS',
+            payload: {
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName
+            }
+          });
         }
       } else {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
-    };
+    });
 
-    loadUser();
-  }, [state.token]);
+    return () => unsubscribe();
+  }, []);
 
   const login = async (email, password) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-      const res = await api.post('/api/auth/login', { email, password });
-      
-      localStorage.setItem('token', res.data.token);
-      dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: res.data
-      });
-      
-      toast.success('Welcome back!');
-      return true;
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      toast.success('Login successful!');
+      return userCredential.user;
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed';
-      dispatch({ type: 'LOGIN_FAIL', payload: message });
-      toast.error(message);
-      return false;
+      const errorMessage = error.code === 'auth/user-not-found' ? 'User not found' :
+                          error.code === 'auth/wrong-password' ? 'Wrong password' :
+                          error.message;
+      dispatch({ type: 'LOGIN_FAIL', payload: errorMessage });
+      toast.error(errorMessage);
+      throw error;
     }
   };
 
   const register = async (userData) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-      const res = await api.post('/api/auth/register', userData);
+      const { email, password, firstName, lastName } = userData;
       
-      localStorage.setItem('token', res.data.token);
-      dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: res.data
+      // Create user with Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // Update display name
+      await updateProfile(userCredential.user, {
+        displayName: `${firstName} ${lastName}`
       });
       
-      toast.success('Account created successfully!');
-      return true;
+      // Save additional user data to Firestore
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        firstName,
+        lastName,
+        email,
+        createdAt: new Date().toISOString(),
+        role: 'student'
+      });
+      
+      toast.success('Registration successful!');
+      return userCredential.user;
     } catch (error) {
-      const message = error.response?.data?.message || 'Registration failed';
-      dispatch({ type: 'LOGIN_FAIL', payload: message });
-      toast.error(message);
-      return false;
+      const errorMessage = error.code === 'auth/email-already-in-use' ? 'Email already in use' :
+                          error.message;
+      dispatch({ type: 'LOGIN_FAIL', payload: errorMessage });
+      toast.error(errorMessage);
+      throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    signOut(auth);
     dispatch({ type: 'LOGOUT' });
     toast.success('Logged out successfully');
   };
 
-  const updateProfile = async (userData) => {
+  const updateProfileData = async (userData) => {
     try {
-      const res = await api.put('/api/auth/profile', userData);
-      dispatch({ type: 'UPDATE_USER', payload: res.data });
+      const user = auth.currentUser;
+      if (!user) throw new Error('No user logged in');
+      
+      // Update display name in Firebase Auth
+      if (userData.firstName && userData.lastName) {
+        await updateProfile(user, {
+          displayName: `${userData.firstName} ${userData.lastName}`
+        });
+      }
+      
+      // Update user data in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        ...userData,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      
+      // Update local state
+      const updatedUser = { ...state.user, ...userData };
+      dispatch({ type: 'UPDATE_USER', payload: updatedUser });
+      
       toast.success('Profile updated successfully');
-      return true;
     } catch (error) {
-      const message = error.response?.data?.message || 'Update failed';
-      toast.error(message);
-      return false;
+      toast.error('Failed to update profile');
+      throw error;
     }
   };
 
@@ -161,21 +196,20 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'CLEAR_ERROR' });
   };
 
+  const value = {
+    user: state.user,
+    isAuthenticated: state.isAuthenticated,
+    loading: state.loading,
+    error: state.error,
+    login,
+    register,
+    logout,
+    updateProfile: updateProfileData,
+    clearError
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user: state.user,
-        token: state.token,
-        isAuthenticated: state.isAuthenticated,
-        loading: state.loading,
-        error: state.error,
-        login,
-        register,
-        logout,
-        updateProfile,
-        clearError
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

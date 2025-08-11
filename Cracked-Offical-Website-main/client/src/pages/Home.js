@@ -53,7 +53,7 @@ const Home = () => {
       name: 'Sarah Johnson',
       score: '1520',
       improvement: '+180',
-      text: 'Crackd Official helped me improve my score by 180 points! The practice tests were incredibly realistic.',
+      text: 'Prepify helped me improve my SAT score by 180 points! The practice tests were incredibly realistic.',
       avatar: 'SJ'
     },
     {
@@ -82,7 +82,7 @@ const Home = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-accent-50 py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-100 py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -92,12 +92,12 @@ const Home = () => {
             >
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
                 Master the{' '}
-                <span className="text-gradient">SAT</span>
+                <span className="text-gradient">SAT & AP Exams</span>
                 <br />
                 with Confidence
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-lg">
-                Join thousands of students who have improved their SAT scores with our comprehensive study materials, practice tests, and personalized learning paths.
+                Join thousands of students who have improved their SAT and AP exam scores with our comprehensive study materials, practice tests, and personalized learning paths.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -170,8 +170,21 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-gradient-to-br from-blue-100 to-blue-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
+              Trusted by Students Worldwide
+            </h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+              Our proven track record speaks for itself with impressive statistics and student success rates.
+            </p>
+          </motion.div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
@@ -180,14 +193,14 @@ const Home = () => {
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="text-center"
                 >
-                  <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <Icon className="w-6 h-6 text-primary-600" />
+                  <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <Icon className="w-8 h-8 text-blue-600" />
                   </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">{stat.number}</div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
+                  <div className="text-4xl font-bold text-gray-800 mb-2">{stat.number}</div>
+                  <div className="text-gray-700 font-medium">{stat.label}</div>
                 </motion.div>
               );
             })}
@@ -196,7 +209,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -205,10 +218,10 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Everything You Need to Succeed
+              Why Choose <span className="text-blue-600">Prepify</span>?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our comprehensive platform provides all the tools and resources you need to achieve your target SAT score.
+              Our comprehensive approach combines cutting-edge technology with proven educational methods to deliver exceptional results.
             </p>
           </motion.div>
 
@@ -236,7 +249,7 @@ const Home = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gradient-to-br from-blue-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -245,10 +258,10 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Success Stories
+              Success Stories from Our Students
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              See how our students have transformed their SAT scores and achieved their academic goals.
+              Join thousands of students who have transformed their academic future with Prepify.
             </p>
           </motion.div>
 

@@ -37,7 +37,7 @@ const Courses = () => {
   ];
 
   return (
-    <div className="pt-16 min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
+    <div className="pt-16 min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -46,10 +46,10 @@ const Courses = () => {
           className="text-center mb-12"
         >
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            SAT Preparation Courses
+            SAT & AP Preparation Courses
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive courses designed to help you master every section of the SAT and achieve your target score.
+            Comprehensive courses designed to help you master every section of the SAT and AP exams to achieve your target scores.
           </p>
         </motion.div>
 

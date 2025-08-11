@@ -57,10 +57,10 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-accent-400 rounded-lg flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-yellow-400" />
+            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+              <GraduationCap className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-gradient">Crackd Official</span>
+            <span className="text-xl font-bold text-gradient">Prepify</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -86,7 +86,7 @@ const Navbar = () => {
               href="https://discord.gg/crackd"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50 transition-all duration-200"
+              className="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-all duration-200"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.369a19.791 19.791 0 00-4.885-1.515.07.07 0 00-.073.035c-.211.375-.444.864-.608 1.249-1.844-.276-3.68-.276-5.486 0-.164-.393-.405-.874-.617-1.249a.07.07 0 00-.073-.035c-1.67.285-3.29.822-4.885 1.515a.064.064 0 00-.03.027C.533 7.045-.32 9.58.099 12.057c.002.014.01.028.021.038a19.978 19.978 0 005.993 3.036.07.07 0 00.076-.027c.461-.63.873-1.295 1.226-1.994a.07.07 0 00-.038-.098 13.087 13.087 0 01-1.872-.893.07.07 0 01-.007-.117c.126-.094.252-.192.371-.291a.07.07 0 01.068-.01c3.927 1.793 8.18 1.793 12.061 0a.07.07 0 01.069.009c.12.099.245.198.372.292a.07.07 0 01-.006.117 12.64 12.64 0 01-1.873.893.07.07 0 00-.037.098c.36.699.772 1.364 1.225 1.994a.07.07 0 00.076.028 19.978 19.978 0 005.994-3.036.07.07 0 00.021-.037c.5-3.177-.838-5.673-3.548-7.661a.061.061 0 00-.03-.028zM8.02 13.331c-1.183 0-2.156-1.085-2.156-2.419 0-1.333.955-2.418 2.156-2.418 1.21 0 2.175 1.095 2.156 2.418 0 1.334-.955 2.419-2.156 2.419zm7.974 0c-1.183 0-2.156-1.085-2.156-2.419 0-1.333.955-2.418 2.156-2.418 1.21 0 2.175 1.095 2.156 2.418 0 1.334-.946 2.419-2.156 2.419z"/></svg>
               <span>Discord</span>
