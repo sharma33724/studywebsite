@@ -1,5 +1,4 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const admin = require('firebase-admin');
 
 const protect = async (req, res, next) => {
   let token;
@@ -9,18 +8,16 @@ const protect = async (req, res, next) => {
       // Get token from header
       token = req.headers.authorization.split(' ')[1];
 
-      // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Get user from token
-      req.user = await User.findById(decoded.id).select('-password');
-
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: 'User not found'
-        });
-      }
+      // Verify Firebase token
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      
+      // Set user info from Firebase
+      req.user = {
+        uid: decodedToken.uid,
+        email: decodedToken.email,
+        displayName: decodedToken.name || decodedToken.display_name,
+        emailVerified: decodedToken.email_verified
+      };
 
       next();
     } catch (error) {
@@ -60,4 +57,4 @@ const authorize = (...roles) => {
   };
 };
 
-module.exports = { protect, authorize }; 
+module.exports = { protect, authorize };
