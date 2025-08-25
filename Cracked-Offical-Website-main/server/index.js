@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
+const connectDB = require('./config/db');
 require('dotenv').config();
 
 const app = express();
@@ -31,12 +32,14 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Import routes
+const authRoutes = require('./routes/auth');
 const coursesRoutes = require('./routes/courses');
 const progressRoutes = require('./routes/progress');
 const practiceTestsRoutes = require('./routes/practiceTests');
 const usersRoutes = require('./routes/users');
 
 // Use routes
+app.use('/api/auth', authRoutes);
 app.use('/api/courses', coursesRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/practice-tests', practiceTestsRoutes);
@@ -105,9 +108,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Prepify server running on port ${PORT}`);
-  console.log(`📚 Comprehensive Test Prep Platform - Ready for students!`);
-  console.log(`🌍 API available at: http://localhost:${PORT}/api`);
-  console.log(`📖 Frontend: http://localhost:3000 (run 'npm run start:client' in another terminal)`);
+// Connect to database
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Prepify server running on port ${PORT}`);
+    console.log(`📚 Comprehensive Test Prep Platform - Ready for students!`);
+    console.log(`🌍 API available at: http://localhost:${PORT}/api`);
+    console.log(`📖 Frontend: http://localhost:3000 (run 'npm run start:client' in another terminal)`);
+  });
+}).catch(err => {
+  console.error('Failed to connect to database:', err);
+  process.exit(1);
 }); 
